@@ -1,25 +1,58 @@
 #!/usr/bin/env python3
 
-import sys
+import argparse
 import rclpy
-from utils.rosbag_utils import extract_images_and_odom
+from annotation_kit.utils.rosbag_utils import extract_images_and_odom
 
 
-if __name__ == "__main__":
+def main():
+    parser = argparse.ArgumentParser(
+        description="Extract images and odometry from a ROS2 bag file."
+    )
 
-    if len(sys.argv) < 5:
-        print("Usage:")
-        print(" python extract.py <bag_path> <image_topic> <odom_topic> <output_dir> <sample_rate>")
-        sys.exit(1)
+    parser.add_argument(
+        "bag_path",
+        type=str,
+        help="Path to the ROS2 bag file"
+    )
 
-    bag_path = sys.argv[1]
-    image_topic = sys.argv[2]
-    odom_topic = sys.argv[3]
-    output_dir = sys.argv[4]
-    sample_rate = int(sys.argv[5]) if len(sys.argv) > 5 else 15
+    parser.add_argument(
+        "image_topic",
+        type=str,
+        help="Image topic name"
+    )
+
+    parser.add_argument(
+        "odom_topic",
+        type=str,
+        help="Odometry topic name"
+    )
+
+    parser.add_argument(
+        "output_dir",
+        type=str,
+        help="Directory where extracted data will be saved"
+    )
+
+    parser.add_argument(
+        "--sample_rate",
+        type=int,
+        default=15,
+        help="Frame sampling rate (default: 5)"
+    )
+
+    args = parser.parse_args()
 
     rclpy.init()
-    extract_images_and_odom(bag_path, image_topic, odom_topic, output_dir, sample_rate)
+    extract_images_and_odom(
+        args.bag_path,
+        args.image_topic,
+        args.odom_topic,
+        args.output_dir,
+        args.sample_rate,
+    )
     rclpy.shutdown()
 
 
+if __name__ == "__main__":
+    main()

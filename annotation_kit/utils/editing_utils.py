@@ -2,6 +2,7 @@ import json
 import os
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+from pathlib import Path
 from PIL import Image
 
 from annotation_kit.annotators.bbox_annotator import BboxAnnotator
@@ -41,9 +42,6 @@ def edit_labels(image_file, annotation_file, classes_json="dataset/classes.json"
     for i, cls in enumerate(text_labels):
         class_text += f"{i}: {cls}\n"
 
-    full_text = instructions + class_text
-
-    print(full_text)
     # Load image
     image = Image.open(image_file)
 
@@ -251,11 +249,11 @@ def generate_and_edit_labels(classes_json, dataset_dir, batch_size=4, allow_edit
         data = json.load(f)
         text_labels = [q for cls in data.values() for q in cls["queries"]]
 
-    image_dir = dataset_dir + "/images"
-    yolo_annotations_dir = dataset_dir + "/labels"
-    coco_annotation_dir = dataset_dir + "/coco_annotations"
+    image_dir = Path(dataset_dir) / "images"
+    yolo_annotations_dir = Path(dataset_dir) / "labels"
+    coco_annotation_dir = Path(dataset_dir) / "coco_annotations"
     # get image type from 1st image in directory
-    img_extension = os.path.splitext(os.listdir(image_dir)[0])[1]
+    image_extension = os.path.splitext(os.listdir(image_dir)[0])[1]
 
     annotator.generate_annotations(image_dir, coco_annotation_dir, batch_size, text_labels, threshold=0.21)
 
@@ -263,7 +261,7 @@ def generate_and_edit_labels(classes_json, dataset_dir, batch_size=4, allow_edit
         # for each annotation file, open the corresponding image and annotation in the interactive editor
         annotation_files = [f for f in os.listdir(coco_annotation_dir) if f.endswith('_nms.txt')]
         for ann_file in annotation_files:
-            image_file = os.path.join(image_dir, ann_file[:-8] + img_extension)
+            image_file = os.path.join(image_dir, ann_file[:-8] + image_extension)
             annotation_file = os.path.join(coco_annotation_dir, ann_file)
             edit_labels(image_file, annotation_file, classes_json)
 

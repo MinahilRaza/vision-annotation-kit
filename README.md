@@ -13,7 +13,7 @@ This repository provides a pipeline for:
 The workflow is as follows:
 
 1. Collect images
-2. Define detection classes and queries in `classes.json`. See `dataset/classes.json` for a sample.
+2. Define detection classes and queries in `classes.json`. See [`dataset/classes.json`](dataset/classes.json) for a sample.
 3. Generate labels using OWLv2
 4. Edit labels with an interactive tool
 5. Convert to YOLO format
@@ -78,7 +78,5 @@ python generate_yolo_labels.py --batch_size 4 --classes_json ../dataset/classes.
 ```
  The directory `../dataset/train` should contain an `images` subfolder.
 
-* Uses **OWLv2** to detect objects
-* Applies text queries from `classes.json`
-* Saves annotations in intermediate format
-* Allows editing using an interactive tool
+## Data Collection
+The data has been collected in the form of `rosbags`. Each rosbag contains an odom topic (for getting the pose) and an image topic. The image data is collected at 15 Hz. We downsample the data to collect 3 images per second. See [`rosbag_utils.py`](annotation_kit/utils/rosbag_utils.py)

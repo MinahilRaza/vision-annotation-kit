@@ -2,11 +2,9 @@
 import csv
 import math
 import os
-import sys
 import cv2
 import numpy as np
 
-import rclpy
 from rclpy.serialization import deserialize_message
 from rosidl_runtime_py.utilities import get_message
 import rosbag2_py
@@ -29,7 +27,7 @@ def quaternion_to_yaw(q):
     cosy_cosp = 1.0 - 2.0 * (q.y * q.y + q.z * q.z)
     return math.atan2(siny_cosp, cosy_cosp)
 
-def extract_images_and_odom(bag_path, image_topic, odom_topic, output_dir, sample_rate=15):
+def extract_images_and_odom(bag_path, image_topic, odom_topic, output_dir, sample_rate=5):
     """
     Extracts images from the specified ROS bag, computes their sharpness scores, and saves the sharpest image every `sample_rate` frames along with the corresponding odometry data.
     The extracted images are saved in the output directory, and a CSV file containing the image names and their corresponding poses is also generated.
@@ -39,7 +37,7 @@ def extract_images_and_odom(bag_path, image_topic, odom_topic, output_dir, sampl
         image_topic (str): Name of the image topic to extract.
         odom_topic (str): Name of the odometry topic to extract.
         output_dir (str): Directory where the extracted images and CSV file will be saved.
-        sample_rate (int): Number of frames to sample before saving the sharpest image. Default is 15.
+        sample_rate (int): Number of frames to sample before saving the sharpest image. Default is 5.
     """
     os.makedirs(output_dir, exist_ok=True)
 
@@ -52,6 +50,8 @@ def extract_images_and_odom(bag_path, image_topic, odom_topic, output_dir, sampl
         input_serialization_format='cdr',
         output_serialization_format='cdr'
     )
+
+    image_suffix =bag_path.split('/')[-1].replace("rosbag2_", "")
 
     reader = rosbag2_py.SequentialReader()
     reader.open(storage_options, converter_options)
@@ -124,14 +124,12 @@ def extract_images_and_odom(bag_path, image_topic, odom_topic, output_dir, sampl
                     yaw = quaternion_to_yaw(q)
 
                     # Save image
-                    image_name = f"{group_index:05d}.png"
+                    image_name = f"{image_suffix}_{group_index:05d}.jpg"
                     image_path = os.path.join(output_dir, image_name)
                     cv2.imwrite(image_path, best_image)
 
                     # Store row for CSV
                     dataset_rows.append([image_name, x, y, z, yaw])
-
-                    print(f"Saved {image_name}")
 
                     group_index += 1
                     buffer_images.clear()

@@ -10,7 +10,7 @@ if [ -z "$BAGS_DIR" ]; then
 fi
 
 # Camera topic
-IMG_TOPIC="/realsense_d456/color_image/compressed"
+IMAGE_TOPIC="/realsense_d456/color_image/compressed"
 ODOM_TOPIC="/spot/odometry"
 
 # Loop through each subdirectory
@@ -24,7 +24,7 @@ for BAG_PATH in "$BAGS_DIR"/*; do
 
     mkdir -p "$OUTPUT_DIR"
 
-    python3.10 extract_images_from_rosbag.py "$BAG_PATH" "$IMG_TOPIC" "$ODOM_TOPIC" "$OUTPUT_DIR"
+    python3.10 ../examples/extract_images_from_rosbag.py "$BAG_PATH" "$IMAGE_TOPIC" "$ODOM_TOPIC" "$OUTPUT_DIR"
 
     echo "Finished: $BAG_NAME"
     echo "-----------------------------"

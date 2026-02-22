@@ -156,13 +156,13 @@ def train_validation_split(image_dir, annotation_dir, split_ratio=0.8):
     os.makedirs(train_annotation_dir, exist_ok=True)
     os.makedirs(val_annotation_dir, exist_ok=True)
 
-    for img_name in train_image_names:
-        shutil.copy(os.path.join(image_dir, img_name), train_image_dir)
-        shutil.copy(os.path.join(annotation_dir, img_name[:-4] + '.txt'), train_annotation_dir)
+    for image_name in train_image_names:
+        shutil.copy(os.path.join(image_dir, image_name), train_image_dir)
+        shutil.copy(os.path.join(annotation_dir, image_name[:-4] + '.txt'), train_annotation_dir)
 
-    for img_name in val_image_names:
-        shutil.copy(os.path.join(image_dir, img_name), val_image_dir)
-        shutil.copy(os.path.join(annotation_dir, img_name[:-4] + '.txt'), val_annotation_dir)
+    for image_name in val_image_names:
+        shutil.copy(os.path.join(image_dir, image_name), val_image_dir)
+        shutil.copy(os.path.join(annotation_dir, image_name[:-4] + '.txt'), val_annotation_dir)
 
 def map_queries_to_classes(classes_json_file):
     """
@@ -210,14 +210,16 @@ def convert_annotations_to_yolo(annotation_dir, image_dir, output_dir, classes_j
     annotation_files = [f for f in os.listdir(annotation_dir) if f.endswith('_nms.txt')]
 
     print(f"Converting {len(annotation_files)} annotation files to YOLO format...")
-
+    
+    # Get image extension from the first image in the directory
+    image_extension = os.path.splitext(os.listdir(image_dir)[0])[1]
     # Get image dimensions from the first image (assuming all images have the same dimensions)
-    first_image_path = os.path.join(image_dir, annotation_files[0][:-8] + '.png')
-    with Image.open(first_image_path) as img:
-        image_width, image_height = img.size
+    first_image_path = os.path.join(image_dir, annotation_files[0][:-8] + image_extension)
+    with Image.open(first_image_path) as image:
+        image_width, image_height = image.size
 
     for ann_file in annotation_files:
-        image_name = ann_file[:-8] + '.png' 
+        image_name = ann_file[:-8] + image_extension 
         image_path = os.path.join(image_dir, image_name)
         annotation_path = os.path.join(annotation_dir, ann_file)
         output_path = os.path.join(output_dir, image_name[:-4] + '.txt')

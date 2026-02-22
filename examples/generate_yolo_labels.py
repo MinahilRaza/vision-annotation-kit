@@ -14,7 +14,7 @@ import json
 import os
 
 from annotation_kit.annotators.bbox_annotator import BboxAnnotator
-from annotation_kit.utils.labeling_utils import convert_annotations_to_yolo, label_map
+from annotation_kit.utils.labeling_utils import label_map
 from annotation_kit.utils.editing_utils import generate_and_edit_labels
 
 # take batch size, classes_json, input directory, output directory as arguments
