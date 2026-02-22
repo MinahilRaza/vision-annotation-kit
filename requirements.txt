@@ -1,0 +1,8 @@
+numpy
+matplotlib
+opencv-python
+pillow
+scipy
+torch
+ultralytics
+git+https://github.com/huggingface/transformers.git

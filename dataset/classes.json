@@ -1,0 +1,51 @@
+{
+    "bottle": {
+        "name": "bottle",
+        "queries": ["plastic bottle", "water bottle", "bottle", "sauce bottle", "glass bottle"]
+    },
+
+    "cup": {
+        "name": "cup",
+        "queries": ["cup", "ceramic mug", "coffee mug"]
+    },
+
+    "chair": {
+        "name": "chair",
+        "queries": ["office chair", "chair"]
+    },
+
+    "table": {
+        "name": "table",
+        "queries": ["computer table", "computer desk", "table"]
+    },
+
+    "box": {
+        "name": "box",
+        "queries": ["cardboard box", "shipping box"]
+    },
+
+    "shovel": {
+        "name": "shovel",
+        "queries": ["shovel", "spade", "scoop"]
+    },
+
+    "plant": {
+        "name": "plant",
+        "queries": ["plant", "potted plant"]
+    },
+
+    "can": {
+        "name": "can",
+        "queries": ["drink can"]
+    },
+
+    "book": {
+        "name": "book",
+        "queries": ["book", "notebook", "textbook"]
+    },
+
+    "dustbin": {
+        "name": "dustbin",
+        "queries": ["garbage bin"]
+    }
+}
