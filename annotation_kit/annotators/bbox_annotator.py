@@ -70,7 +70,9 @@ class BboxAnnotator:
                     score = annotation["confidence"]
                     box = annotation["box"]
                     xmin, ymin, xmax, ymax = box
-                    f.write(f"{xmin} {ymin} {xmax} {ymax} {text_label} {score}\n")
+                    # Check area of the bounding box. filter it if less than 24x24 pixels
+                    if abs(xmax-xmin)*abs(ymax-ymax) > 24**2:
+                        f.write(f"{xmin} {ymin} {xmax} {ymax} {text_label} {score}\n")
             
             # Map queries to classes
             for annotation in annotations:
@@ -78,6 +80,7 @@ class BboxAnnotator:
                     annotation["label"] = self.query_to_class[annotation["label"]]
             # Apply Non-Maximum Suppression (NMS) to the annotations
             annotations_nms = filter_enclosed_annotations(annotations)
+            
             # save annotations with nms and post processing
             annotation_file_nms = os.path.join(annotations_dir, f"{image_name[:-4]}_nms.txt")
             with open(annotation_file_nms, "w") as f:

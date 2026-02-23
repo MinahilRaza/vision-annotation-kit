@@ -124,15 +124,18 @@ def edit_labels(image_file, annotation_file, classes_json="dataset/classes.json"
 
     rect_patches = []
     label_patches = []
+    text_patches = []
 
     def redraw_boxes():
-        nonlocal rect_patches, label_patches
+        nonlocal rect_patches, label_patches, text_patches
 
-        for p in rect_patches + label_patches:
+        # Remove old patches
+        for p in rect_patches + label_patches + text_patches:
             p.remove()
 
         rect_patches.clear()
         label_patches.clear()
+        text_patches.clear()
 
         for b in boxes:
             color = label_colors.get(b["label"], "red")
@@ -143,7 +146,8 @@ def edit_labels(image_file, annotation_file, classes_json="dataset/classes.json"
                 b["y2"] - b["y1"],
                 linewidth=2,
                 edgecolor=color,
-                facecolor="none"
+                facecolor="none",
+                alpha=0.7
             )
             ax.add_patch(rect)
             rect_patches.append(rect)
@@ -156,18 +160,20 @@ def edit_labels(image_file, annotation_file, classes_json="dataset/classes.json"
                 18,
                 linewidth=0,
                 edgecolor=color,
-                facecolor=color
+                facecolor=color,
+                alpha=0.5
             )
             ax.add_patch(label_bg)
             label_patches.append(label_bg)
 
-            ax.text(
+            text = ax.text(
                 b["x1"] + 2,
                 label_y + 14,
                 b["label"],
                 color="white",
                 fontsize=8
             )
+            text_patches.append(text)
 
         ax.set_title(f"Current class: {current_label}")
         fig.canvas.draw()
